@@ -6,34 +6,20 @@ using System.Windows.Input;
 using Xamarin.Forms;
 
 using System.ComponentModel;
+using TodoList.ViewModel;
 
 namespace ToDoListApp
 {
 
 
-    class TodoListViewModel:INotifyPropertyChanged
+        class TodoListViewModel
     {
-        string _summaryText = string.Empty;
-        public string summaryText
-        {
-            get => _summaryText;
-            set
-            {
-                if (_summaryText == value)
-                    return;
-
-                _summaryText = value;
-                OnPropertyChanged(nameof(summaryText));
-                OnPropertyChanged(nameof(DisplayName ));
-            }
-
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
+        private readonly Commands Ncommand = new Commands(); 
+   
+       
         public ObservableCollection<TodoItem> TodoItems { get; set; }
 
-        public string DisplayName => summaryText;
+        
         public TodoListViewModel()
         {
             TodoItems = new ObservableCollection<TodoItem>();
@@ -42,27 +28,29 @@ namespace ToDoListApp
             TodoItems.Add(new TodoItem("todo2", false));
             TodoItems.Add(new TodoItem("todo3", true));
         }
+
         public ICommand AddTodoCommand => new Command(AddTodoItem);
         public string NewTodoInputValue { get; set; }
 
         void AddTodoItem()
         {
+            
             TodoItems.Add(new TodoItem(NewTodoInputValue,false));
+            NewTodoInputValue = string.Empty; 
+            Ncommand.CloseWindow();
+
         }
-        public ICommand RemoveTodoCommand => new Command(RemoveTodoItem);
+
+       public ICommand RemoveTodoCommand => new Command(RemoveTodoItem);
        public void RemoveTodoItem(object o)
+
         {
             TodoItem todoItemBeingRemoved = o as TodoItem;
             //TodoItems.Remove(todoItemBeingRemoved);
             Console.WriteLine(todoItemBeingRemoved.TodoText );
+            
         }
 
-        
-
-        void OnPropertyChanged(string name)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
+      
     }
 }
